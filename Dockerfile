@@ -1,26 +1,25 @@
 # Stage 1: Build the application
-FROM eclipse-temurin:21-jdk-alpine AS builder
+ 
+FROM maven:3.9.7-amazoncorretto-21 AS build
 WORKDIR /app
-
-# Copy Maven files
-COPY pom.xml ./ 
-COPY mvnw ./ 
-COPY .mvn .mvn
+COPY pom.xml .
 COPY src ./src
+RUN mvn clean package -DskipTests
 
-# Make Maven wrapper executable
-RUN chmod +x mvnw
-RUN ./mvnw clean package -DskipTests
-
-# Stage 2: Run the application
-FROM eclipse-temurin:21-jdk-alpine
+# Stage 2: Create the final, minimal runtime image
+# Uses a lightweight JRE image to run the final application.
+FROM amazoncorretto:21-alpine-jre
 WORKDIR /app
 
-# Copy the jar from the builder stage
-COPY --from=builder /app/target/*.jar app.jar
+# Best practice: Run as a non-root user for security.
+RUN addgroup -S spring && adduser -S spring -G spring
+USER spring
 
-# Expose port 8080
+# Expose the port your application will listen on.
 EXPOSE 8080
 
-# Start the app
-ENTRYPOINT ["java", "-jar", "app.jar"]
+# Copy the built JAR from the 'build' stage.
+COPY --from=build /app/target/*.jar app.jar
+
+# Define the command to run the Spring Boot application.
+ENTRYPOINT ["java", "-XX:MaxRAMPercentage=80.0", "-XX:InitialRAMPercentage=80.0", "-jar", "app.jar"]
