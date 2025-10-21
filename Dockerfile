@@ -1,25 +1,23 @@
-# Stage 1: Build the application
- 
-FROM maven:3.9.7-amazoncorretto-21 AS build
+# Stage 1: Build the application (if you want to build within Docker)
+FROM maven:3.9.6-eclipse-temurin-21 AS build
 WORKDIR /app
 COPY pom.xml .
 COPY src ./src
-RUN mvn clean package -DskipTests
+RUN mvn clean package -Dmaven.test.skip=true
 
-# Stage 2: Create the final, minimal runtime image
-# Uses a lightweight JRE image to run the final application.
-FROM amazoncorretto:21-alpine-jre
+# Stage 2: Create the final image
+FROM eclipse-temurin:21-jre-jammy
 WORKDIR /app
 
-# Best practice: Run as a non-root user for security.
-RUN addgroup -S spring && adduser -S spring -G spring
-USER spring
+# Create a non-root user and group
+RUN groupadd --system spring && useradd --system --gid spring spring
+USER spring:spring
 
-# Expose the port your application will listen on.
-EXPOSE 8080
-
-# Copy the built JAR from the 'build' stage.
+# Copy the built JAR from the build stage
 COPY --from=build /app/target/*.jar app.jar
 
-# Define the command to run the Spring Boot application.
-ENTRYPOINT ["java", "-XX:MaxRAMPercentage=80.0", "-XX:InitialRAMPercentage=80.0", "-jar", "app.jar"]
+# Expose the port your Spring Boot application listens on
+EXPOSE 8080
+
+# Command to run the application
+ENTRYPOINT ["java", "-jar", "app.jar"]
