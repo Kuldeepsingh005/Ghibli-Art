@@ -1,15 +1,14 @@
 services:
   - type: web
     name: Ghibli
-    env: docker
+    env: java
     repo: https://github.com/Kuldeepsingh005/Ghibli-Art.git
     region: Singapore
     plan: free
     branch: main
     healthCheckPath: /actuator/health
-    dockerfilePath: ./build/Dockerfile
     buildFilter:
       paths:
         - "pom.xml"
         - "src/**"
-        - "build/Dockerfile"
+        - "Dockerfile"
