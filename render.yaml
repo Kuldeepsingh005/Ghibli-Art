@@ -8,7 +8,7 @@
     plan: free
     branch: main
     healthCheckPath: /actuator/health
-    dockerfilePath: Dockerfile
+    dockerfilePath: ./Dockerfile
     buildFilter:
       paths:
         - "pom.xml"
