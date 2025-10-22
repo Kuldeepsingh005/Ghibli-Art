@@ -1,7 +1,11 @@
 services:
   - type: web
     name: Ghibli-Art
+<<<<<<< HEAD:render.yml
     env: Docker
+=======
+    env: docker
+>>>>>>> e3c10a7 (render change):render.yaml
     repo: https://github.com/Kuldeepsingh005/Ghibli-Art.git
     region: Singapore
     plan: free
