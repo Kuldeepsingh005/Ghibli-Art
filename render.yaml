@@ -1,17 +1,14 @@
-services:
+ services:
   - type: web
-    name: Ghibli-Art
-<<<<<<< HEAD:render.yml
-    env: Docker
-=======
+    name: Ghibli
     env: docker
->>>>>>> e3c10a7 (render change):render.yaml
     repo: https://github.com/Kuldeepsingh005/Ghibli-Art.git
+    rootDir: .
     region: Singapore
     plan: free
     branch: main
     healthCheckPath: /actuator/health
-    dockerfilePath: ./Dockerfile
+    dockerfilePath: Dockerfile
     buildFilter:
       paths:
         - "pom.xml"
