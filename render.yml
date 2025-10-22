@@ -1,7 +1,7 @@
 services:
   - type: web
-    name: Ghibli
-    env: docker
+    name: Ghibli-Art
+    env: Docker
     repo: https://github.com/Kuldeepsingh005/Ghibli-Art.git
     region: Singapore
     plan: free
